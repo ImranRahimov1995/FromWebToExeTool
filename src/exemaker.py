@@ -11,10 +11,6 @@ from django.shortcuts import HttpResponse
 from django.conf import settings
 
 
-# from src.exemaker import ExeMaker ,Settings
-# maker = Exemaker()
-
-
 @dataclass
 class Settings:
     """
@@ -22,6 +18,7 @@ class Settings:
 
         nativefier_dir: is directory which folder with exe file after
         converting website to native app.
+
 
     """
 
@@ -31,6 +28,21 @@ class Settings:
 
 
 class ExeMaker:
+    """
+    [DESCRIPTION]
+
+    Need create instance of class . Parameters: \n
+    Url : is link of website which you want convert to desktop app. \n
+    Os_type : is Operating system type.Only[windows,mac,linux] supported \n
+    Convert_mode: you can use nativefier over docker or npm \n
+    Config: you can write custom Settings , or not use this for django
+
+
+    If you need django response call instance.django_response() \n
+    Or you can get file path call instance.get_zip_filepath()
+
+    """
+
     def __init__(
             self,
             url: str,
