@@ -9,3 +9,6 @@ sudo npm install -g nativefier
 
 ___________________________________
 
+HOME_DIR = os.path.expanduser('~')
+NATIVEFIER_DIR = BASE_DIR + '/nativefier-apps/'
+ZIP_DIR = BASE_DIR / 'zips'

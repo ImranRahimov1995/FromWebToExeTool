@@ -1,0 +1,35 @@
+
+
+1. install django
+2. create project.
+3. config your settings.
+4. add to your settings.py :
+
+        HOME_DIR = os.path.expanduser('~')
+        NATIVEFIER_DIR = BASE_DIR / 'nativefier-apps/'
+        ZIP_DIR = BASE_DIR / 'zips/'
+
+5. Create app, Create url, create template, create view .
+6. Copy exemaker.py in your app and import in view ExeMaker class.
+
+
+from django.shortcuts import render
+from exemaker.exemaker import ExeMaker
+
+
+def handler(request):
+    if request.method == "POST":
+        # This is might be form .
+        url = request.POST.get('url')
+        os_choices = request.POST.get('os_choices')
+
+        if url and os_choices:
+            maker = ExeMaker(url=url, # https://github.com/
+                             os_type=os_choices, # "windows/mac/linux"
+                             convert_mode='npm') # you can use npm or docker.
+
+            return maker.django_response()
+
+    return render(request, 'index.html')
+
+
