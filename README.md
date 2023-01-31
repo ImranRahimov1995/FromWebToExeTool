@@ -1,63 +1,98 @@
-
-
- **
-
-## FromWebToExeTool
-
-**
-**DESCRIPTION:**
+**[DESCRIPTION]**
 
 This tool is needed for converting any website from web to desktop app.
+
+
+This tool is needed for converting any website from web to desktop app.
+
 Finally you get zip file - which including all dependency files and file for execution.
-Supported output platform is WINDOWS, LINUX, MAC  | arch=x64
-App running over Nativefier: [source code](https://github.com/nativefier/nativefier)
-____________________
 
-**FIRST STEPS** **INSTALL DEPENDENCIES**:
+Supported output platform is WINDOWS, LINUX, MAC  | arch=x64.   
+
+App based on Nativefier: [source code](https://github.com/nativefier/nativefier)
 
 
-1. For using this tool you need to [install step-by-step](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04) docker and pull image from dockerhub :
+**[INSTALL]**
 
-    **docker pull nativefier/nativefier**
+```
+git clone https://github.com/ImranRahimov1995/FromWebToExeTool.git
+cd FromWebToExeTool
 
-2.  Or you can use npm for install  (of course npm was been installed):
+# The first you need to install dependecies[Nodejs,Docker,Npm,Nativefier] use script:
 
-    **npm install -g nativefier**
+. ./exemaker.sh
 
-3. Wine is needed for  generating windows exe on linux: 
+# After setup your environment
 
-    **sudo apt-get install wine-stable**
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
 
-4.  You need to install **requirements.txt**
 
-_____________________________________________
+**[USAGE]**
+
+```
+from src.exemaker import ExeMaker
+
+BASE_DIR = str(Path(__file__).resolve().parent.parent)
+
+
+settings = Settings(
+    nativefier_dir=os.path.join(BASE_DIR, 'nativefier-apps'),
+    zip_dir=os.path.join(BASE_DIR, 'zips'),
+)
+
+maker = ExeMaker(
+    url="https://translate.google.com/", # any website link
+    os_type="linux", # "windows/mac/linux"
+    convert_mode="npm", # you can use npm or docker.
+    config=settings, # If use django is not needed , you can pass
+)
+
+filepath = maker.get_zip_filepath() # Zip file
+response = maker.django_response() # Django response for return in view
+
+```
 
 **[USAGE IN DJANGO]**
 
-1. Copy exemaker.py file to your project app folder.
-2. Need create instance of class :
+in settings.py
+```
+HOME_DIR = os.path.expanduser('~')
+NATIVEFIER_DIR = BASE_DIR / 'nativefier-apps/'
+ZIP_DIR = BASE_DIR / 'zips/'
+```
+Create app, Create url, create template, create view .
+Copy exemaker.py in your app and import in view ExeMaker class.
+```
+def handler(request):
+    if request.method == "POST":
+        # This is might be form .
+        url = request.POST.get('url')
+        os_choices = request.POST.get('os_choices')
 
-`   
-maker=ExeMaker(url="https://translate.google.com/",os_type="linux",convert_mode="docker",config=None)
-`
+        if url and os_choices:
+            maker = ExeMaker(url=url, # https://github.com/
+                             os_type=os_choices, # "windows/mac/linux"
+                             convert_mode='npm') # you can use npm or docker.
 
-views.py
+            return maker.django_response()
 
-    def handler(request):
-	
-	    if request.method == "POST":
-			url = request.POST.get('url')
-			os_choices = request.POST.get('os_choices')
+    return render(request, 'index.html')
 
-			if url and os_choices:
 
-				maker=ExeMaker(
-                                url=url,
-                                os_type=os_choices,
-                                convert_mode="docker",# or npm
-								)
-				
-				return maker.django_response()
+```
 
-        return render(request, 'index.html')
+
+
+**[NOTES]**
+
+Don't forget test for any platform. 
+Nativefier must adapt and download all files for platforms.
+
+**[TEST]**
+
+`pytest -s src/test.py`
+
 
