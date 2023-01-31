@@ -37,4 +37,6 @@ docker-compose --version
 # wine stable Wine is needed for generating windows exe on linux:
 sudo apt-get install -y wine-stable
 
+docker pull nativefier/nativefier
+
 
